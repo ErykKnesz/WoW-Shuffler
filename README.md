@@ -4,4 +4,4 @@ This simple app enables players of the War of Whispers board game to shuffle sta
 
 Link to the game: https://www.starling.games/awow
 
-I do not wish to infringe upon copyright of the authors and the published. This app was made without commercial intent and for individual player's use only, as a fan project.
+I do not wish to infringe upon the copyright of the authors and the publisher. This app was made without commercial intent and for individual player's use only, as a fan project.
