@@ -51,6 +51,7 @@ class WoWShuffler(BoxLayout):
     empires = ListProperty(('horse', 'bear', 'lion', 'elephant', 'eagle'))
     players = ListProperty(('Raven', 'Spider', 'Rat', 'Snake'))
     current_player_index = BoundedNumericProperty(0, min=0, max=3, errorvalue=3)
+    current_shuffle = ListProperty([])
     devouts = ListProperty()
     opposed = ListProperty()
 
@@ -76,6 +77,11 @@ class WoWShuffler(BoxLayout):
                         opposed.append(empires_order[0])
                 return empires_order
 
+    def commit_shuffle(self):
+        self.devouts.append(self.current_shuffle[0])
+        if self.mode == 'b':
+            self.opposed.append(self.current_shuffle[0])
+     
     def get_current_player(self, players, index):
         return players[index]
 
