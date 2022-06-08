@@ -55,26 +55,21 @@ class WoWShuffler(BoxLayout):
     devouts = ListProperty()
     opposed = ListProperty()
 
-    def _shuffle(self, empires):
-        shuffled = random.sample(empires, len(empires))
+    def _shuffle(self):
+        shuffled = random.sample(self.empires, len(self.empires))
         return shuffled
 
-    def _shuffled_correctly(self, mode, shuffled, devouts, opposed):
-        if mode == 'a':
-            return shuffled[0] not in devouts
-        return shuffled[0] not in devouts and shuffled[-1] not in opposed
+    def _shuffled_correctly(self, shuffled):
+        if self.mode == 'a':
+            return shuffled[0] not in self.devouts
+        return shuffled[0] not in self.devouts and shuffled[-1] not in self.opposed
 
-    def get_empires_order(self, mode, empires, devouts, opposed, same_player=True):
+    def get_empires_order(self):
         not_shuffled = True
         while not_shuffled:
-            empires_order = self._shuffle(empires)
-            if self._shuffled_correctly(mode, empires_order, devouts, opposed):
+            empires_order = self._shuffle()
+            if self._shuffled_correctly(empires_order):
                 not_shuffled = False
-                if not same_player:
-                    devouts.append(empires_order[0])
-                if mode == 'b':
-                    if not same_player:
-                        opposed.append(empires_order[0])
                 return empires_order
 
     def commit_shuffle(self):
@@ -82,8 +77,8 @@ class WoWShuffler(BoxLayout):
         if self.mode == 'b':
             self.opposed.append(self.current_shuffle[0])
      
-    def get_current_player(self, players, index):
-        return players[index]
+    def get_current_player(self):
+        return self.players[self.current_player_index]
 
     def reset_properties(self):
         self.current_player_index = 0
