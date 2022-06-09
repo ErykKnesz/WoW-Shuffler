@@ -55,7 +55,6 @@
             Button:
                 text: root.next_player_btn.text
                 disabled: True if wowshuffler.current_player_index == 3 else root.next_player_btn.disabled
-                on_press: print(wowshuffler.devouts)
                 on_press: root.update(f"Current player: {wowshuffler.get_current_player()}", "Shuffle the loyalty tokens!")
                 on_press: wowshuffler.current_player_index += 1
                 on_press: wowshuffler.commit_shuffle()
@@ -67,6 +66,7 @@
             Button:
                 text: 'Back to menu'
                 on_press: root.manager.current = 'menu'
+                on_press: root.next_player_btn.disabled = True
+                on_press: root.player_label.text = "Current player: Raven"
+                on_press: root.order_label.text = "Shuffle the loyalty tokens!"
                 on_press: wowshuffler.reset_properties()
-
-

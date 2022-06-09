@@ -82,8 +82,9 @@ class WoWShuffler(BoxLayout):
 
     def reset_properties(self):
         self.current_player_index = 0
-        self.devouts.set([])
-        self.opposed.set([])
+        self.devouts = []
+        self.opposed = []
+        self.current_shuffle = []
 
 
 class WoWApp(App):
