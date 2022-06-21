@@ -62,7 +62,7 @@
                 on_press: app.shuffler.commit_shuffle()
             Button:
                 text: 'Shuffle'
-                on_press: root.update(app.shuffler.get_current_player(), app.shuffler.get_next_player(), f"{' || '.join(app.shuffler.current_shuffle)}")
+                on_press: root.update(app.shuffler.get_current_player(), app.shuffler.get_next_player(), root.display_order(app.shuffler.current_shuffle))
                 on_press: app.shuffler.current_shuffle = app.shuffler.get_empires_order()
                 on_press: root.enable_btn('next_player_btn')
             Button:

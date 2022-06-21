@@ -1,20 +1,21 @@
 import random
+import os
 
 from kivy.app import App    
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
 from kivy.uix.button import Button
-from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.image import Image
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.properties import (
     StringProperty, ListProperty, BoundedNumericProperty)
 
 
-HORSE_PHOTO = "photos/20220529_200810.png"
-ELEPHANT_PHOTO = "photos/20220529_200833.jpg"
-LION_PHOTO = "photos/20220529_200846.jpg"
-BEAR_PHOTO = "photos/20220529_200856.jpg"
-EAGLE_PHOTO = "photos/20220529_200910.jpg"
+HORSE_PHOTO = os.getenv('horse')
+ELEPHANT_PHOTO = os.getenv('elephant')
+LION_PHOTO = os.getenv('lion')
+BEAR_PHOTO = os.getenv('bear')
+EAGLE_PHOTO = os.getenv('eagle')
 
 
 class MenuScreen(Screen):
@@ -28,10 +29,14 @@ class ShufflingScreen(Screen):
     next_player_btn = Button(text='Next player', disabled=True)
 
     def update(self, player_txt, next_player_txt,
-                      order_txt=order_label.text):
+                      order="Shuffle the loyalty tokens!"):
         self.player_label.text = f"Current player: {player_txt}"
         self.next_player_label.text = f"Next player: {next_player_txt}"
-        self.order_label.text = order_txt
+        if isinstance(order, str):
+            self.order_label.text = order
+        else:
+            self.order_images = ListProperty(order)
+            print(order)
 
     def disable_btn(self, btn):
         if btn == 'next_player_btn':
@@ -41,6 +46,12 @@ class ShufflingScreen(Screen):
         if btn == 'next_player_btn':
             self.next_player_btn.disabled = False
 
+    def display_order(self, current_shuffle):
+        try:
+            return [Image(source=os.environ[empire]) for empire
+                    in current_shuffle]
+        except KeyError:
+            return f"{' || '.join(current_shuffle)}"
 
 class WoWSceenManager(ScreenManager):
     def __init__(self, *args, **kwargs):
