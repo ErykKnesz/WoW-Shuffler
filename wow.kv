@@ -1,16 +1,11 @@
 #:kivy 2.1.0
 
 
-<WoWShuffler>:
-    id: wowshuffler
-    orientation: 'vertical'
-    padding: 20
-
 <MenuScreen>:
     BoxLayout:
         orientation: 'vertical'
         Label:
-            text: root.heading.text
+            text: root.heading
             font_size: 45
         GridLayout:
             cols: 2
@@ -40,35 +35,46 @@
                 text: str(' Devout and Opposed must be unique')
                 font_size: 30
 
+
 <ShufflingScreen>:
     BoxLayout:
         orientation: 'vertical'
         Label:
-            text: root.player_label.text
+            text: root.player_label
             font_size: 45
         Label:
-            text: root.next_player_label.text
+            text: root.next_player_label
             font_size: 30
         Label:
-            text: root.order_label.text
+            text: root.order_label
             font_size: 45
+        BoxLayout:
+            Image:
+                source: root.order_images[0] if app.use_images and root.order_images else ""
+            Image:
+                source: root.order_images[1] if app.use_images and root.order_images else ""
+            Image:
+                source: root.order_images[2] if app.use_images and root.order_images else ""
+            Image:
+                source: root.order_images[3] if app.use_images and root.order_images else ""
+            Image:
+                source: root.order_images[4] if app.use_images and root.order_images else ""
         BoxLayout:
             Button:
                 text: root.next_player_btn.text
                 disabled: True if app.shuffler.current_player_index == 3 else root.next_player_btn.disabled
-                on_press: root.update(app.shuffler.get_current_player(), app.shuffler.get_next_player())
                 on_press: app.shuffler.current_shuffle.clear()
+                on_press: root.update(app.shuffler.get_current_player(), app.shuffler.get_next_player())
                 on_press: app.shuffler.change_player()
                 on_press: app.shuffler.commit_shuffle()
             Button:
                 text: 'Shuffle'
                 on_press: root.update(app.shuffler.get_current_player(), app.shuffler.get_next_player(), root.display_order(app.shuffler.current_shuffle))
-                on_press: app.shuffler.current_shuffle = app.shuffler.get_empires_order()
+                on_press: app.shuffler.get_empires_order()
                 on_press: root.enable_btn('next_player_btn')
             Button:
                 text: 'Back to menu'
                 on_press: root.manager.current = 'menu'
                 on_press: root.next_player_btn.disabled = True
-                on_press: root.player_label.text = "Current player: Raven"
-                on_press: root.order_label.text = "Shuffle the loyalty tokens!"
+                on_press: root.update("Raven", "")
                 on_press: app.shuffler.reset_properties()

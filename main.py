@@ -2,42 +2,39 @@ import random
 import os
 
 from kivy.app import App    
-from kivy.uix.label import Label
 from kivy.uix.widget import Widget
 from kivy.uix.button import Button
 from kivy.uix.image import Image
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.properties import (
-    StringProperty, ListProperty, BoundedNumericProperty)
-
-
-HORSE_PHOTO = os.getenv('horse')
-ELEPHANT_PHOTO = os.getenv('elephant')
-LION_PHOTO = os.getenv('lion')
-BEAR_PHOTO = os.getenv('bear')
-EAGLE_PHOTO = os.getenv('eagle')
+    StringProperty, ListProperty, BoundedNumericProperty, BooleanProperty)
 
 
 class MenuScreen(Screen):
-    heading = Label(text="Choose shuffling constraints (a or b)")
+    heading = StringProperty("Choose shuffling constraints (a or b)")
 
 
 class ShufflingScreen(Screen):
-    player_label = Label(text="Current player: Raven")
-    next_player_label = Label(text="Next player: Spider")
-    order_label = Label(text="Shuffle the loyalty tokens!")
+    player_label = StringProperty("Current player: Raven")
+    next_player_label = StringProperty("Next player: Spider")
+    order_label = StringProperty("Shuffle the loyalty tokens!")
+    order_images = ListProperty()
     next_player_btn = Button(text='Next player', disabled=True)
 
     def update(self, player_txt, next_player_txt,
-                      order="Shuffle the loyalty tokens!"):
-        self.player_label.text = f"Current player: {player_txt}"
-        self.next_player_label.text = f"Next player: {next_player_txt}"
-        if isinstance(order, str):
-            self.order_label.text = order
+               order="Shuffle the loyalty tokens!"):
+        self.player_label = f"Current player: {player_txt}"
+        self.next_player_label = f"Next player: {next_player_txt}"
+        if isinstance (order, tuple):
+            self.order_label = order[0]
+            self.order_images = order[1]
         else:
-            self.order_images = ListProperty(order)
-            print(order)
+            self.order_label = order
+            if order == "Shuffle the loyalty tokens!":
+                for i in range(len(self.order_images)):
+                    self.order_images[i] = ""
 
+            
     def disable_btn(self, btn):
         if btn == 'next_player_btn':
             self.next_player_btn.disabled = True
@@ -47,11 +44,13 @@ class ShufflingScreen(Screen):
             self.next_player_btn.disabled = False
 
     def display_order(self, current_shuffle):
+        as_string = f"{' || '.join(current_shuffle)}"
         try:
-            return [Image(source=os.environ[empire]) for empire
-                    in current_shuffle]
+            return as_string, [os.environ[empire] for empire
+                               in current_shuffle]
         except KeyError:
-            return f"{' || '.join(current_shuffle)}"
+            return as_string
+
 
 class WoWSceenManager(ScreenManager):
     def __init__(self, *args, **kwargs):
@@ -88,7 +87,8 @@ class WoWShuffler(Widget):
             empires_order = self._shuffle()
             if self._shuffled_correctly(empires_order):
                 not_shuffled = False
-                return empires_order
+                self.current_shuffle = empires_order
+                return self.current_shuffle
 
     def commit_shuffle(self):
         try:
@@ -103,11 +103,9 @@ class WoWShuffler(Widget):
 
     def get_next_player(self):
         if self.current_player_index < len(self.players) - 1:
-            index = self.current_player_index + 1
-            return self.players[index]
+            return self.players[self.current_player_index + 1]
         return ""
         
-
     def change_player(self):
         if self.current_shuffle:
             self.current_player_index += 1
@@ -121,8 +119,14 @@ class WoWShuffler(Widget):
 
 class WoWApp(App):
     shuffler = WoWShuffler()
+    use_images = BooleanProperty(False)
+
+    def check_for_images(self):
+        if os.getenv('horse'):
+            self.use_images = True
 
     def build(self):
+        self.check_for_images()
         wow_sm = WoWSceenManager()
         return wow_sm
 
