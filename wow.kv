@@ -1,5 +1,8 @@
 #:kivy 2.1.0
 
+<EmpireImage@Image>:
+    color: (0, 0, 0, 0) if self.source == "" else (1, 1, 1, 1)
+
 
 <MenuScreen>:
     BoxLayout:
@@ -49,15 +52,15 @@
             text: root.order_label
             font_size: 45
         BoxLayout:
-            Image:
+            EmpireImage:
                 source: root.order_images[0] if app.use_images and root.order_images else ""
-            Image:
+            EmpireImage:
                 source: root.order_images[1] if app.use_images and root.order_images else ""
-            Image:
+            EmpireImage:
                 source: root.order_images[2] if app.use_images and root.order_images else ""
-            Image:
+            EmpireImage:
                 source: root.order_images[3] if app.use_images and root.order_images else ""
-            Image:
+            EmpireImage:
                 source: root.order_images[4] if app.use_images and root.order_images else ""
         BoxLayout:
             Button:
