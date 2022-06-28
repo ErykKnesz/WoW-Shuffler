@@ -1,10 +1,9 @@
 import random
 import os
 
-from kivy.app import App    
+from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.uix.button import Button
-from kivy.uix.image import Image
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.properties import (
     StringProperty, ListProperty, BoundedNumericProperty, BooleanProperty)
@@ -25,7 +24,7 @@ class ShufflingScreen(Screen):
                order="Shuffle the loyalty tokens!"):
         self.player_label = f"Current player: {player_txt}"
         self.next_player_label = f"Next player: {next_player_txt}"
-        if isinstance (order, tuple):
+        if isinstance(order, tuple):
             self.order_label = order[0]
             self.order_images = order[1]
         else:
@@ -34,7 +33,6 @@ class ShufflingScreen(Screen):
                 for i in range(len(self.order_images)):
                     self.order_images[i] = ""
 
-            
     def disable_btn(self, btn):
         if btn == 'next_player_btn':
             self.next_player_btn.disabled = True
@@ -65,7 +63,7 @@ class WoWShuffler(Widget):
     mode = StringProperty()
     empires = ListProperty(('horse', 'bear', 'lion', 'elephant', 'eagle'))
     players = ListProperty(('Raven', 'Spider', 'Rat', 'Snake'))
-    current_player_index = BoundedNumericProperty(0, min=0, max=3, 
+    current_player_index = BoundedNumericProperty(0, min=0, max=3,
                                                   errorvalue=3)
     current_shuffle = ListProperty([])
     devouts = ListProperty()
@@ -97,7 +95,7 @@ class WoWShuffler(Widget):
                 self.opposed.append(self.current_shuffle[-1])
         except IndexError:
             pass
-     
+
     def get_current_player(self):
         return self.players[self.current_player_index]
 
@@ -105,7 +103,7 @@ class WoWShuffler(Widget):
         if self.current_player_index < len(self.players) - 1:
             return self.players[self.current_player_index + 1]
         return ""
-        
+
     def change_player(self):
         if self.current_shuffle:
             self.current_player_index += 1
