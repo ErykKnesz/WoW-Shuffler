@@ -1,5 +1,7 @@
-import random, copy
+import random
+import copy
 from .. import main
+import csv  # optional
 
 
 PATHS = {
@@ -37,7 +39,7 @@ def test_shuffled_correctly_with_mode_a_with_empty_devouts():
     assert wow_shuffler._shuffled_correctly(shuffle)
 
 
-def test_shuffled_correctly_with_mode_a_with_filled_devouts():
+def test_shuffled_correctly_with_mode_a_with_full_devouts():
     wow_shuffler = main.WoWShuffler()
     wow_shuffler.mode = 'a'
     shuffle = wow_shuffler._shuffle()
@@ -45,14 +47,39 @@ def test_shuffled_correctly_with_mode_a_with_filled_devouts():
     assert not wow_shuffler._shuffled_correctly(shuffle)
 
 
-def test_shuffled_correctly_with_mode_a_with_empty_devouts_and_opposed():
+def test_current_shuffle_with_mode_a_with_random_empire_in_devouts():
+    wow_shuffler.mode = 'a'
+    answers = []
+    wow_shuffler.devouts = random.choices(empires, k=1)
+    for i in range(1000):
+        wow_shuffler.get_empires_order()
+        answer = wow_shuffler.current_shuffle[0] != wow_shuffler.devouts[0]
+        answers.append(answer)
+    assert all(answers)
+
+
+def test_current_shuffle_with_mode_b_with_random_empire_in_devouts_and_opposed():
+    wow_shuffler = main.WoWShuffler()
+    wow_shuffler.mode = 'b'
+    answers = []
+    wow_shuffler.devouts = random.choices(empires, k=1)
+    wow_shuffler.opposed = random.choices(empires, k=1)
+    for i in range(1000):
+        wow_shuffler.get_empires_order()
+        answer = (wow_shuffler.current_shuffle[0] != wow_shuffler.devouts[0]
+                  and wow_shuffler.current_shuffle[-1] != wow_shuffler.opposed[0])
+        answers.append(answer)
+    assert all(answers)
+
+
+def test_shuffled_correctly_with_mode_b_with_empty_devouts_and_opposed():
     wow_shuffler = main.WoWShuffler()
     wow_shuffler.mode = 'b'
     shuffle = wow_shuffler._shuffle()
     assert wow_shuffler._shuffled_correctly(shuffle)
 
 
-def test_shuffled_correctly_with_mode_b_with_filled_devouts_and_opposed():
+def test_shuffled_correctly_with_mode_b_with_full_devouts_and_opposed():
     wow_shuffler = main.WoWShuffler()
     wow_shuffler.mode = 'b'
     shuffle = wow_shuffler._shuffle()
@@ -103,7 +130,7 @@ def test_get_next_player_for_index_within_range():
 
 
 def test_change_player():
-    wow_shuffler.current_player_index = random.randint(0,4)
+    wow_shuffler.current_player_index = random.randint(0, 4)
     wow_shuffler.current_shuffle = wow_shuffler.empires
     current_player_index = copy.deepcopy(wow_shuffler.current_player_index)
     wow_shuffler.change_player()
